@@ -3,8 +3,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn import datasets
 
-INTMAX = 1000
-
 
 def visualize(X):
     # Visualizing the normalized sepal features
@@ -37,10 +35,21 @@ def assign_clusters(X: np.ndarray, centroids: np.ndarray):
     Returns:
         labels (ndarray): Cluster assignments for each data point.
     """
-    # TODO: Compute the distance of each point to all centroids
 
-    # TODO: Assign each point to the closest centroid
-    labels = 0
+    INTMAX = 1024
+    dists: np.ndarray = np.empty(shape=(centroids.shape[0], 1))
+    dists.fill(INTMAX)
+    labels: np.ndarray = np.empty(shape=X.shape[0])
+
+    for i in range(X.shape[0]):
+        # TODO: Compute the distance of each point to all centroids
+        diff: np.ndarray = centroids - X[i]
+        norms = np.linalg.norm(diff, axis=1)
+
+        # TODO: Assign each point to the closest centroid
+        ind_min = np.argmin(norms)
+        labels[i] = ind_min
+
     return labels
 
 
@@ -55,6 +64,7 @@ def initialize_centroids_kmeans_pp(X, K):
     Returns:
         centroids (ndarray): Initialized centroids of shape (K, n_features).
     """
+    INTMAX = 1000
     # Step 1: Select the first centroid
     centroids: np.ndarray = np.empty(shape=(K, X.shape[1]))
     centroids[0] = X[0]
@@ -97,4 +107,5 @@ if __name__ == '__main__':
     X = preprocess_iris(df)
     K = 3
 
-    initialize_centroids_kmeans_pp(X, K)
+    centroids = initialize_centroids_kmeans_pp(X, K)
+    print(assign_clusters(X, centroids))
