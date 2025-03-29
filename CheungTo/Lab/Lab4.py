@@ -35,10 +35,21 @@ def assign_clusters(X: np.ndarray, centroids: np.ndarray):
     Returns:
         labels (ndarray): Cluster assignments for each data point.
     """
-    # TODO: Compute the distance of each point to all centroids
 
-    # TODO: Assign each point to the closest centroid
-    labels = 0
+    INTMAX = 1024
+    dists: np.ndarray = np.empty(shape=(centroids.shape[0], 1))
+    dists.fill(INTMAX)
+    labels: np.ndarray = np.empty(shape=X.shape[0])
+
+    for i in range(X.shape[0]):
+        # TODO: Compute the distance of each point to all centroids
+        diff: np.ndarray = centroids - X[i]
+        norms = np.linalg.norm(diff, axis=1)
+
+        # TODO: Assign each point to the closest centroid
+        ind_min = np.argmin(norms)
+        labels[i] = ind_min
+
     return labels
 
 
@@ -96,4 +107,5 @@ if __name__ == '__main__':
     X = preprocess_iris(df)
     K = 3
 
-    initialize_centroids_kmeans_pp(X, K)
+    centroids = initialize_centroids_kmeans_pp(X, K)
+    print(assign_clusters(X, centroids))
