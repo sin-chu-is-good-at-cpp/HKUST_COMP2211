@@ -85,6 +85,26 @@ def initialize_centroids_kmeans_pp(X, K):
     return centroids
 
 
+def update_centroids(X, labels, K):
+    """
+    Updates cluster centroids based on the mean of assigned points.
+
+    Parameters:
+        X (ndarray): Dataset of shape (n_samples, n_features).
+        labels (ndarray): Cluster assignments for each data point.
+        K (int): Number of clusters.
+
+    Returns:
+        new_centroids (ndarray): Updated centroids of shape (K, n_features).
+    """
+    # TODO: Compute new centroids as the mean of assigned data points
+    new_centroids = np.empty(shape=(K, X.shape[1]))
+    for i in range(K):
+        cluster_i = X[labels == i]
+        new_centroids[i] = np.mean(cluster_i, axis=0)
+    return new_centroids
+
+
 def preprocess_iris(df):
     """ Preprocesses only petal features (more relevant for clustering). """
     X = np.array(df)
@@ -108,4 +128,6 @@ if __name__ == '__main__':
     K = 3
 
     centroids = initialize_centroids_kmeans_pp(X, K)
-    print(assign_clusters(X, centroids))
+    labels = assign_clusters(X, centroids)
+
+    update_centroids(X, labels, K)
