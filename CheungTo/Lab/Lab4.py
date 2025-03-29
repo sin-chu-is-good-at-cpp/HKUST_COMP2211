@@ -102,6 +102,7 @@ def update_centroids(X, labels, K):
     for i in range(K):
         cluster_i = X[labels == i]
         new_centroids[i] = np.mean(cluster_i, axis=0)
+
     return new_centroids
 
 
