@@ -3,8 +3,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn import datasets
 
-INTMAX = 1000
-
 
 def visualize(X):
     # Visualizing the normalized sepal features
@@ -55,6 +53,7 @@ def initialize_centroids_kmeans_pp(X, K):
     Returns:
         centroids (ndarray): Initialized centroids of shape (K, n_features).
     """
+    INTMAX = 1000
     # Step 1: Select the first centroid
     centroids: np.ndarray = np.empty(shape=(K, X.shape[1]))
     centroids[0] = X[0]
