@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn import datasets
 
 
-def visualize(X):
+def visualize_normalized_sepal_features(X):
     # Visualizing the normalized sepal features
     plt.figure(figsize=(8, 6))
     plt.scatter(X[:, 0], X[:, 1], alpha=0.7, edgecolors='k')
@@ -106,6 +106,39 @@ def update_centroids(X, labels, K):
     return new_centroids
 
 
+def k_means(X, K, max_iters=100, tol=1e-4):
+    """
+    Runs the K-means clustering algorithm.
+
+    Parameters:
+        X (ndarray): Dataset of shape (n_samples, n_features).
+        k (int): Number of clusters.
+        max_iters (int): Maximum iterations.
+        tol (float): Convergence tolerance.
+
+    Returns:
+        final_centroids (ndarray): Final cluster centroids.
+        final_labels (ndarray): Final cluster assignments.
+    """
+    # Step 1: Initialize centroids using K-means++
+    centroids = initialize_centroids_kmeans_pp(X, K)
+
+    for _ in range(max_iters):
+        # Step 2: Assign points to clusters
+        labels = assign_clusters(X, centroids)
+
+        # Step 3: Compute new centroids
+        new_centroids = update_centroids(X, labels, K)
+
+        # Step 4: Check for convergence (centroids do not change significantly)
+        if np.linalg.norm(centroids - new_centroids) < tol:
+            break
+
+        centroids = new_centroids
+
+    return centroids, labels
+
+
 def preprocess_iris(df):
     """ Preprocesses only petal features (more relevant for clustering). """
     X = np.array(df)
@@ -128,7 +161,27 @@ if __name__ == '__main__':
     X = preprocess_iris(df)
     K = 3
 
-    centroids = initialize_centroids_kmeans_pp(X, K)
-    labels = assign_clusters(X, centroids)
+    final_centroids, final_labels = k_means(X, K)
+    print(final_labels)
 
-    update_centroids(X, labels, K)
+    # Visualization of your results
+    plt.figure(figsize=(8, 6))
+    plt.scatter(X[:, 0], X[:, 1], c=final_labels,
+                cmap='viridis', alpha=0.7, edgecolors='k')
+    plt.xlabel("Sepal Length")
+    plt.ylabel("Sepal Width")
+    plt.title("Visualization of K-Means Clustering (Sepal Features)")
+    # plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    # Visualization of your results
+    plt.figure(figsize=(8, 6))
+    plt.scatter(X[:, 2], X[:, 3], c=final_labels,
+                cmap='viridis', alpha=0.7, edgecolors='k')
+    plt.xlabel("Petal Length")
+    plt.ylabel("Petal Width")
+    plt.title("Visualization of K-Means Clustering (Petal Features)")
+    # plt.legend()
+    plt.grid(True)
+    plt.show()
